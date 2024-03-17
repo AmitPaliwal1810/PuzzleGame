@@ -5,7 +5,7 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import MediaQuery from "react-responsive";
 import { GameStatus, GAME_PAUSED, GAME_STARTED } from "../lib/game-status";
 import {
@@ -17,6 +17,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   seconds: number;
@@ -36,6 +37,17 @@ export const Menu: React.FC<Props> = ({
   gameState,
 }) => {
   const theme = useTheme();
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) navigation("/");
+  });
+
+  const handleLogout = useCallback(() => {
+    localStorage.setItem("token", "");
+    navigation("/");
+  }, [navigation]);
 
   return (
     <AppBar
@@ -126,6 +138,9 @@ export const Menu: React.FC<Props> = ({
             }
           />
         </Stack>
+        <Button variant="text" onClick={handleLogout}>
+          Log-out
+        </Button>
       </Toolbar>
     </AppBar>
   );
